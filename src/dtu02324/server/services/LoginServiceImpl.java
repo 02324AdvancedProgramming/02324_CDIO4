@@ -1,21 +1,25 @@
 package dtu02324.server.services;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 import dtu02324.client.login.LoginService;
 import dtu02324.server.dal.OprDAO;
+import dtu02324.shared.Login_bundle;
 import dtu02324.shared.OprDTO;
 import dtu02324.shared.support.PasswordHandler;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService{
 
 	@Override
-	public OprDTO login(int id, String password) throws IllegalArgumentException {
+	public Login_bundle login(int id, String password) throws IllegalArgumentException {
 		if(!PasswordHandler.validatePassword(password)) return null;
 		OprDTO opr = OprDAO.getInstance().getOpr(id);
-		System.out.println(opr);
-		return opr;
+		String token = "";
+		//Token should be stored somewhere with an expiration time
+		Login_bundle b = new Login_bundle(token);
+		b.setOpr(opr);
+		return b;
 	}
 
 }

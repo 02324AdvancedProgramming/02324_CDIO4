@@ -16,6 +16,17 @@
     <url-pattern>/cdio4/login</url-pattern>
   </servlet-mapping>
   
+  
+  <servlet>
+    <servlet-name>menuServlet</servlet-name>
+    <servlet-class>dtu02324.server.services.MenuServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>menuServlet</servlet-name>
+    <url-pattern>/cdio4/menu</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>CDIO4.html</welcome-file>

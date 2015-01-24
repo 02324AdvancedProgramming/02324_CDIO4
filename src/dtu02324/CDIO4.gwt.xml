@@ -26,6 +26,7 @@
   <source path='client'/>
   <source path='shared'/>
   <source path="client.login"/>
+  <source path="client.menu"/>
   <source path="shared.support"/>
 
   <!-- allow Super Dev Mode -->

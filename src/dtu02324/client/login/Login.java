@@ -1,7 +1,7 @@
 package dtu02324.client.login;
 
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -9,46 +9,24 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import dtu02324.shared.OprDTO;
+import dtu02324.shared.Login_bundle;
 
 public class Login extends Composite implements HasText {
 	interface LoginUiBinder extends UiBinder<Widget, Login> { }
 	private static LoginUiBinder uiBinder = GWT.create(LoginUiBinder.class);
 
-	private final String BTN_TXT = "Login";
-
 	@UiField TextBox id_box, password_box;
 	@UiField Button button;
-	@UiField VerticalPanel cont;
 	private LoginServiceAsync loginservice = GWT.create(LoginService.class);
-	private ParagraphElement user_p;
+	private Callback<Login_bundle, String> callback;
 
-	public Login(ParagraphElement user_p) {
+	public Login(Callback<Login_bundle, String> callback) {
 		initWidget(uiBinder.createAndBindUi(this));
-		button.setText(BTN_TXT);
-		this.user_p = user_p;
-		
-		FlexTable flex = new FlexTable();
-		flex.setBorderWidth(2);
-		Label id_lbl = new Label();
-		id_lbl.setText("User ID:");
-		flex.setWidget(0, 0, id_lbl);
-		TextBox id_box = new TextBox();
-		flex.setWidget(1, 0, id_box);
-		Label password_lbl = new Label();
-		id_lbl.setText("Password:");
-		flex.setWidget(2, 0, password_lbl);
-		TextBox password_box = new TextBox();
-		flex.setWidget(3, 0, password_box);
-		
-		cont.add(flex);
+		this.callback = callback;
 	}
 
 	@UiHandler("button")
@@ -58,17 +36,16 @@ public class Login extends Composite implements HasText {
 		try{
 			int id = Integer.parseInt(_id);
 
-			loginservice.login(id, password, new AsyncCallback<OprDTO>() {
+			loginservice.login(id, password, new AsyncCallback<Login_bundle>() {
 
 				@Override
-				public void onSuccess(OprDTO result) {
-					user_p.setInnerText(result.getName());
+				public void onSuccess(Login_bundle result) {
+					callback.onSuccess(result);
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-
+					callback.onFailure(caught.getMessage());
 				}
 			});
 		}catch(NumberFormatException ex){

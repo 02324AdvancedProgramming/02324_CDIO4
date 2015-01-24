@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class PasswordHandler {
-	private static final int MIN_PASSWORD_LENGTH = 6;
-	private static ArrayList<Character> lowers, uppers, numbers, specials;
+	public static final int MIN_PASSWORD_LENGTH = 6;
+	public static ArrayList<Character> lowers, uppers, numbers, specials;
 	static{
 		lowers = new ArrayList<Character>();
 		uppers = new ArrayList<Character>();
@@ -40,20 +40,11 @@ public class PasswordHandler {
 		password.add(numbers.get(rand.nextInt(numbers.size())));
 		password.add(specials.get(rand.nextInt(specials.size())));
 		
-		int total_chars = lowers.size() + uppers.size()
-				+ numbers.size() + specials.size();
 		
-		int length = rand.nextInt(5)+6;
+		
+		int length = rand.nextInt(5)+(MIN_PASSWORD_LENGTH); 
 		for(int i = 4; i < length; i++){
-			int index = rand.nextInt(total_chars); 
-			if(index < lowers.size()){ password.add(lowers.get(index)); continue; }
-			index -= lowers.size(); 
-			if(index < uppers.size()){ password.add(uppers.get(index)); continue; }
-			index -= uppers.size(); 
-			if(index < numbers.size()){ password.add(numbers.get(index)); continue; }
-			index -= numbers.size(); 
-			if(index > specials.size()) throw new IndexOutOfBoundsException("Programmer error");
-			password.add(specials.get(index));
+			password.add(randomChar());
 		}
 		GWT_Collections.shuffle(password);
 		StringBuilder builder = new StringBuilder();
@@ -66,6 +57,20 @@ public class PasswordHandler {
 			throw new RuntimeException("Programmmer error - generated invalid password!");
 		}
 		return _password;
+	}
+	
+	public static char randomChar(){
+		int total_chars = lowers.size() + uppers.size()
+				+ numbers.size() + specials.size();
+		int index = rand.nextInt(total_chars); 
+		if(index < lowers.size()){ return lowers.get(index); }
+		index -= lowers.size(); 
+		if(index < uppers.size()){ return uppers.get(index); }
+		index -= uppers.size(); 
+		if(index < numbers.size()){ return numbers.get(index); }
+		index -= numbers.size(); 
+		if(index > specials.size()) throw new IndexOutOfBoundsException("Programmer error");
+		return specials.get(index);
 	}
 	
 	public static boolean validatePassword(String password) {
